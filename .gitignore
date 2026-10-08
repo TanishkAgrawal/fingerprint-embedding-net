@@ -1,0 +1,45 @@
+# --- Virtual environment ---
+.venv/
+venv/
+env/
+
+# --- Dataset & generated data (regenerable from raw download + pipeline scripts) ---
+data/raw/
+data/processed/
+data/splits/
+stuff/
+# NOTE: config/preprocessing_config.yaml is intentionally NOT ignored -
+# it's small, checked-in on purpose so the whole team shares the same
+# measured border/CLAHE/size settings.
+
+# --- Model artifacts (large, regenerable by re-training) ---
+checkpoints/
+outputs/logs/
+outputs/results/
+*.pt
+*.pth
+*.ckpt
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- IDE ---
+.idea/
+.vscode/
+
+# --- OS clutter ---
+.DS_Store
+Thumbs.db
+
+# --- Misc ---
+*.log
+.env

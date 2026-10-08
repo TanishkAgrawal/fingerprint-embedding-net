@@ -1,0 +1,14 @@
+# --- Data pipeline (build_metadata.py, preprocessing.py, measure_border.py) ---
+numpy
+pandas
+opencv-python
+scikit-learn
+PyYAML
+
+# --- Model + training (ResNet backbone, ArcFace/triplet loss) ---
+# torch
+# torchvision
+# pytorch-metric-learning
+
+# --- Evaluation (ROC/EER, plots) ---
+matplotlib
