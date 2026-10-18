@@ -7,18 +7,19 @@ env/
 data/raw/
 data/processed/
 data/splits/
+data/sp/
 stuff/
 # NOTE: config/preprocessing_config.yaml is intentionally NOT ignored -
 # it's small, checked-in on purpose so the whole team shares the same
 # measured border/CLAHE/size settings.
 
-# --- Model artifacts (large, regenerable by re-training) ---
+# --- Model artifacts and eval dumps (large, regenerable) ---
 checkpoints/
-outputs/logs/
-outputs/results/
+outputs/
 *.pt
 *.pth
 *.ckpt
+*.npz
 
 # --- Python ---
 __pycache__/

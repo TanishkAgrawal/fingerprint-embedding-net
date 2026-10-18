@@ -6,9 +6,9 @@ scikit-learn
 PyYAML
 
 # --- Model + training (ResNet backbone, ArcFace/triplet loss) ---
-# torch
-# torchvision
-# pytorch-metric-learning
+torch
+torchvision
+pytorch-metric-learning
 
 # --- Evaluation (ROC/EER, plots) ---
 matplotlib

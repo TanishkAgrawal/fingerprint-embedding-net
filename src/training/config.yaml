@@ -1,0 +1,29 @@
+model:
+  backbone: resnet18
+  embedding_dim: 512
+
+loss:
+  type: arcface
+  kwargs: {}   # e.g. margin: 28.6, scale: 64 for ArcFace
+
+training:
+  device: cuda        # cuda = GPU required; auto = GPU if available else CPU; cpu = force CPU
+  cuda_device: 0      # which GPU when using CUDA
+  epochs: 25
+  frozen_epochs: 10
+  batch_size: 32
+  learning_rate: 0.001
+  backbone_lr_scale: 0.1
+  weight_decay: 0.0005
+  lr_decay: true
+  log_interval: 100   # print train progress every N batches (batch 1 always logged)
+
+data:
+  train_csv: data/processed/train/train.csv
+  val_csv: data/processed/val/val.csv
+  test_csv: data/processed/test/test.csv
+  num_workers: 0   # use 0 on Windows unless you're sure multiprocessing is safe
+
+output:
+  checkpoint_dir: checkpoints
+  log_dir: outputs/logs
