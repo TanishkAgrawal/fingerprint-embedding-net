@@ -17,7 +17,7 @@ Typical usage
 ─────────────
     from src.models.backbone import FingerprintEmbeddingNet
 
-    model = FingerprintEmbeddingNet(backbone_name='resnet18', embedding_dim=128)
+    model = FingerprintEmbeddingNet(backbone_name='resnet18', embedding_dim=512)
     model.freeze_backbone()          # train head only for first few epochs
     # ... later:
     model.unfreeze_backbone()
@@ -140,7 +140,7 @@ class FingerprintEmbeddingNet(nn.Module):
     backbone_name : {'resnet18', 'densenet121', 'vgg16'}
         Which pretrained backbone to use.
     embedding_dim : int
-        Output embedding dimensionality (default 128).
+        Output embedding dimensionality (default 512).
     pretrained : bool
         Initialise backbone with ImageNet weights (default True).
     """
@@ -150,7 +150,7 @@ class FingerprintEmbeddingNet(nn.Module):
     def __init__(
         self,
         backbone_name: str = "resnet18",
-        embedding_dim: int = 128,
+        embedding_dim: int = 512,
         pretrained: bool = True,
     ) -> None:
         super().__init__()

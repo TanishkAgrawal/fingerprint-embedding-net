@@ -1,0 +1,69 @@
+# Final ResNet-only tuning grid. Overlays config.yaml; only changed keys are listed.
+# embedding_dim is always 512. Do not run this grid on DenseNet/VGG: the
+# architecture comparison in the report uses the three untouched baselines.
+#
+# Design: trial 1 is the best-guess "regularised" setup. Trials 2 and 3 each
+# change ONE thing from trial 1, so any difference can be explained in the report.
+#
+# Budget: 3 trials x up to 16 epochs x ~2 min/epoch ~= 1.6 h worst case.
+# Early stopping usually cuts this. Each trial is a full run, so the best
+# trial's checkpoint IS the final model: no retraining needed.
+# Checkpoints: checkpoints/tune/resnet18_<trial_name>/
+#
+# Choose the winner by VALIDATION EER only. Run the test set once, on that
+# single checkpoint.
+#
+# Keys marked (patch) only take effect after the augment() + dataset.py
+# change (get_dataloader must accept augment_cfg). train.py prints a WARNING
+# if it cannot pass them on. Early stopping and gradient clipping are already
+# handled inside train.py.
+#
+# If val EER jumps up at the first phase-2 epoch, swap trial 3 for
+# training.phase2_lr_scale: 0.5 (halves every learning rate after unfreezing).
+
+shared_overrides:
+  training.epochs: 16
+  training.frozen_epochs: 6
+  training.early_stop_patience: 4
+
+trials:
+  # Best guess: gentle backbone updates + stronger augmentation + more weight decay.
+  # Targets the phase-2 overfitting seen in the baseline.
+  - name: regularised
+    training.backbone_lr_scale: 0.02
+    training.weight_decay: 0.001
+    augmentation.rotation_deg: 30           # (patch)
+    augmentation.translate_frac: 0.08       # (patch)
+    augmentation.scale_range: [0.9, 1.1]    # (patch)
+    augmentation.partial_crop_prob: 0.4     # (patch)
+    augmentation.partial_crop_min_frac: 0.6 # (patch)
+    augmentation.erase_prob: 0.25           # (patch)
+    augmentation.noise_std: 0.02            # (patch)
+
+  # Same as "regularised", but a smaller ArcFace margin (easier to fit, often
+  # generalises better on small datasets).
+  - name: regularised_margin20
+    training.backbone_lr_scale: 0.02
+    training.weight_decay: 0.001
+    loss.kwargs.margin: 20.0
+    augmentation.rotation_deg: 30
+    augmentation.translate_frac: 0.08
+    augmentation.scale_range: [0.9, 1.1]
+    augmentation.partial_crop_prob: 0.4
+    augmentation.partial_crop_min_frac: 0.6
+    augmentation.erase_prob: 0.25
+    augmentation.noise_std: 0.02
+
+  # Same as "regularised", but a longer head-only phase and a shorter
+  # fine-tuning phase (10 frozen + 6 unfrozen epochs).
+  - name: regularised_long_frozen
+    training.frozen_epochs: 10
+    training.backbone_lr_scale: 0.02
+    training.weight_decay: 0.001
+    augmentation.rotation_deg: 30
+    augmentation.translate_frac: 0.08
+    augmentation.scale_range: [0.9, 1.1]
+    augmentation.partial_crop_prob: 0.4
+    augmentation.partial_crop_min_frac: 0.6
+    augmentation.erase_prob: 0.25
+    augmentation.noise_std: 0.02

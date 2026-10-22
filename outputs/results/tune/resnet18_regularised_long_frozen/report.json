@@ -1,0 +1,109 @@
+{
+  "checkpoint": "checkpoints/tune/resnet18_regularised_long_frozen/best.pt",
+  "epoch": 16,
+  "backbone": "resnet18",
+  "loss_type": "arcface",
+  "embedding_dim": 512,
+  "n_images": 8179,
+  "n_identities": 900,
+  "verification_overall": {
+    "n_genuine": 33737,
+    "n_impostor": 168685,
+    "eer": 0.004621041938662529,
+    "roc_auc": 0.9998652252689826,
+    "gap": 0.7982051372528076,
+    "genuine_mean": 0.8318518400192261,
+    "impostor_mean": 0.033646710216999054
+  },
+  "verification_by_difficulty": {
+    "easy": {
+      "n_genuine": 2680,
+      "n_impostor": 36395,
+      "eer": 0.0014469255693256855,
+      "roc_auc": 0.9999947302913923,
+      "gap": 0.8958297371864319,
+      "genuine_mean": 0.9260100722312927,
+      "impostor_mean": 0.030180316418409348
+    },
+    "hard": {
+      "n_genuine": 2071,
+      "n_impostor": 36395,
+      "eer": 0.0077232783660292625,
+      "roc_auc": 0.9997307561243396,
+      "gap": 0.7606516480445862,
+      "genuine_mean": 0.790831983089447,
+      "impostor_mean": 0.030180316418409348
+    },
+    "medium": {
+      "n_genuine": 2528,
+      "n_impostor": 36395,
+      "eer": 0.002730835461989045,
+      "roc_auc": 0.9999537750351715,
+      "gap": 0.8215096592903137,
+      "genuine_mean": 0.8516899943351746,
+      "impostor_mean": 0.030180316418409348
+    }
+  },
+  "verification_by_alteration": {
+    "central_rotation": {
+      "n_genuine": 2403,
+      "n_impostor": 36395,
+      "eer": 0.006239668000489473,
+      "roc_auc": 0.9998170762070606,
+      "gap": 0.8049370646476746,
+      "genuine_mean": 0.8351173996925354,
+      "impostor_mean": 0.030180316418409348
+    },
+    "obliteration": {
+      "n_genuine": 2681,
+      "n_impostor": 36395,
+      "eer": 0.004029766656458378,
+      "roc_auc": 0.9999107148301672,
+      "gap": 0.8090766072273254,
+      "genuine_mean": 0.8392569422721863,
+      "impostor_mean": 0.030180316418409348
+    },
+    "zcut": {
+      "n_genuine": 2195,
+      "n_impostor": 36395,
+      "eer": 0.000991376000456512,
+      "roc_auc": 0.9999956062952652,
+      "gap": 0.8881600499153137,
+      "genuine_mean": 0.9183403849601746,
+      "impostor_mean": 0.030180316418409348
+    }
+  },
+  "identification": {
+    "n_gallery": 900,
+    "n_probe": 7279,
+    "mean_rank": 1.0684159912075835,
+    "rank_1": 0.985162797087512,
+    "rank_5": 0.9969776068141228,
+    "rank_10": 0.9982140403901635,
+    "by_difficulty": {
+      "easy": {
+        "n_probe": 2680,
+        "rank_1": 0.9940298507462687,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "hard": {
+        "n_probe": 2071,
+        "rank_1": 0.9681313375181072,
+        "rank_5": 0.9908256880733946,
+        "rank_10": 0.9946885562530179
+      },
+      "medium": {
+        "n_probe": 2528,
+        "rank_1": 0.9897151898734177,
+        "rank_5": 0.9988132911392406,
+        "rank_10": 0.9992088607594937
+      }
+    }
+  },
+  "plots": {
+    "histogram": "outputs/results\\tune\\resnet18_regularised_long_frozen\\histogram.png",
+    "roc": "outputs/results\\tune\\resnet18_regularised_long_frozen\\roc.png",
+    "cmc": "outputs/results\\tune\\resnet18_regularised_long_frozen\\cmc.png"
+  }
+}

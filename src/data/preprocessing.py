@@ -137,36 +137,58 @@ def cache_processed_dataset(metadata_csv, output_dir, size=None):
     return df
 
 
-def augment(img, rng=None):
+def augment(img, rng=None, cfg=None):
     """
-    Random augmentation applied at training time only (not cached).
-    img: (H, W) float32 array in [0, 1].
+    img: (H, W) float32 in [0, 1]. cfg: the `augmentation` section of config.
+    Missing keys fall back to the previous hardcoded behaviour.
     """
     rng = rng or np.random.default_rng()
+    cfg = cfg or {}
     h, w = img.shape
 
-    # Random rotation (finger placement angle)
-    angle = rng.uniform(-20, 20)
-    center = (w / 2, h / 2)
-    rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
-    img = cv2.warpAffine(img, rot_mat, (w, h), borderMode=cv2.BORDER_REPLICATE)
+    rot = cfg.get("rotation_deg", 20)
+    trans = cfg.get("translate_frac", 0.0)
+    s_lo, s_hi = cfg.get("scale_range", [1.0, 1.0])
+    crop_p = cfg.get("partial_crop_prob", 0.3)
+    crop_min = cfg.get("partial_crop_min_frac", 0.7)
+    erase_p = cfg.get("erase_prob", 0.0)
+    noise_std = cfg.get("noise_std", 0.0)
 
-    # Brightness/contrast jitter (sensor and moisture variation)
-    alpha = rng.uniform(0.9, 1.1)   # contrast
-    beta = rng.uniform(-0.05, 0.05)  # brightness
-    img = np.clip(img * alpha + beta, 0.0, 1.0)
+    # One affine for rotation + scale + translation (single interpolation pass)
+    angle = rng.uniform(-rot, rot)
+    scale = rng.uniform(s_lo, s_hi)
+    M = cv2.getRotationMatrix2D((w / 2, h / 2), angle, scale)
+    M[0, 2] += rng.uniform(-trans, trans) * w
+    M[1, 2] += rng.uniform(-trans, trans) * h
+    img = cv2.warpAffine(img, M, (w, h), borderMode=cv2.BORDER_REPLICATE)
 
-    # Random partial crop (simulates partial-contact sensors), then resize back
-    if rng.random() < 0.3:
-        crop_frac = rng.uniform(0.7, 0.95)
-        ch, cw = int(h * crop_frac), int(w * crop_frac)
+    # Contrast / brightness jitter
+    img = np.clip(img * rng.uniform(0.9, 1.1) + rng.uniform(-0.05, 0.05), 0.0, 1.0)
+
+    # Partial crop, resized back
+    if rng.random() < crop_p:
+        f = rng.uniform(crop_min, 0.95)
+        ch, cw = int(h * f), int(w * f)
         top = rng.integers(0, h - ch + 1)
         left = rng.integers(0, w - cw + 1)
-        img = img[top:top + ch, left:left + cw]
-        img = cv2.resize(img, (w, h))
+        img = cv2.resize(img[top:top + ch, left:left + cw], (w, h))
+
+    # Random erasing: blank a patch so the net can't rely on one region
+    if rng.random() < erase_p:
+        area = rng.uniform(0.02, 0.15) * h * w
+        aspect = rng.uniform(0.5, 2.0)
+        eh = min(h, max(1, int(np.sqrt(area * aspect))))
+        ew = min(w, max(1, int(np.sqrt(area / aspect))))
+        y0 = rng.integers(0, h - eh + 1)
+        x0 = rng.integers(0, w - ew + 1)
+        img = img.copy()
+        img[y0:y0 + eh, x0:x0 + ew] = np.median(img)
+
+    # Gaussian sensor noise
+    if noise_std > 0:
+        img = np.clip(img + rng.normal(0, noise_std, img.shape), 0.0, 1.0)
 
     return img.astype(np.float32)
-
 
 if __name__ == "__main__":
     import argparse

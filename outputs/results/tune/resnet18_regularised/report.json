@@ -1,0 +1,109 @@
+{
+  "checkpoint": "checkpoints/tune/resnet18_regularised/best.pt",
+  "epoch": 16,
+  "backbone": "resnet18",
+  "loss_type": "arcface",
+  "embedding_dim": 512,
+  "n_images": 8179,
+  "n_identities": 900,
+  "verification_overall": {
+    "n_genuine": 33737,
+    "n_impostor": 168685,
+    "eer": 0.0020185550674796104,
+    "roc_auc": 0.9999668117270996,
+    "gap": 0.8006405830383301,
+    "genuine_mean": 0.8366573452949524,
+    "impostor_mean": 0.03601675108075142
+  },
+  "verification_by_difficulty": {
+    "easy": {
+      "n_genuine": 2680,
+      "n_impostor": 36395,
+      "eer": 0.0003788966569118202,
+      "roc_auc": 0.9999988414842944,
+      "gap": 0.8908072113990784,
+      "genuine_mean": 0.9302000403404236,
+      "impostor_mean": 0.03939281404018402
+    },
+    "hard": {
+      "n_genuine": 2071,
+      "n_impostor": 36395,
+      "eer": 0.002891077660024166,
+      "roc_auc": 0.9999571735867433,
+      "gap": 0.7618114352226257,
+      "genuine_mean": 0.801204264163971,
+      "impostor_mean": 0.03939281404018402
+    },
+    "medium": {
+      "n_genuine": 2528,
+      "n_impostor": 36395,
+      "eer": 0.0011841047089546919,
+      "roc_auc": 0.999994598211258,
+      "gap": 0.8222571015357971,
+      "genuine_mean": 0.8616499304771423,
+      "impostor_mean": 0.03939281404018402
+    }
+  },
+  "verification_by_alteration": {
+    "central_rotation": {
+      "n_genuine": 2403,
+      "n_impostor": 36395,
+      "eer": 0.0024711445439606905,
+      "roc_auc": 0.9999716890041682,
+      "gap": 0.8060944080352783,
+      "genuine_mean": 0.8454872369766235,
+      "impostor_mean": 0.03939281404018402
+    },
+    "obliteration": {
+      "n_genuine": 2681,
+      "n_impostor": 36395,
+      "eer": 0.001797988312318921,
+      "roc_auc": 0.9999863387131098,
+      "gap": 0.8077059388160706,
+      "genuine_mean": 0.8470987677574158,
+      "impostor_mean": 0.03939281404018402
+    },
+    "zcut": {
+      "n_genuine": 2195,
+      "n_impostor": 36395,
+      "eer": 8.242890180554241e-05,
+      "roc_auc": 0.999999636987358,
+      "gap": 0.8843902349472046,
+      "genuine_mean": 0.9237830638885498,
+      "impostor_mean": 0.03939281404018402
+    }
+  },
+  "identification": {
+    "n_gallery": 900,
+    "n_probe": 7279,
+    "mean_rank": 1.0093419425745294,
+    "rank_1": 0.9946421211704904,
+    "rank_5": 1.0,
+    "rank_10": 1.0,
+    "by_difficulty": {
+      "easy": {
+        "n_probe": 2680,
+        "rank_1": 0.9955223880597015,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "hard": {
+        "n_probe": 2071,
+        "rank_1": 0.9932399806856591,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "medium": {
+        "n_probe": 2528,
+        "rank_1": 0.9948575949367089,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      }
+    }
+  },
+  "plots": {
+    "histogram": "outputs/results\\tune\\resnet18_regularised\\histogram.png",
+    "roc": "outputs/results\\tune\\resnet18_regularised\\roc.png",
+    "cmc": "outputs/results\\tune\\resnet18_regularised\\cmc.png"
+  }
+}

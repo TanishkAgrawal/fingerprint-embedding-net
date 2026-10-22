@@ -1,27 +1,30 @@
 """
 PyTorch Dataset and DataLoader factory for the fingerprint embedding project.
 
-Loads preprocessed .npy images (128×128 float32, cached by preprocessing.py)
-from the split CSVs produced by build_metadata.py → preprocessing.py.
+Loads preprocessed .npy images (128x128 float32, cached by preprocessing.py)
+from the split CSVs produced by build_metadata.py -> preprocessing.py.
 
 All three backbones (ResNet18, DenseNet121, VGG16) share the same DataLoader:
-  - Input shape  : (3, 128, 128)  — grayscale replicated across 3 channels
+  - Input shape  : (3, 128, 128)  - grayscale replicated across 3 channels
   - Value range  : ImageNet-normalized (mean/std applied after [0,1] scaling)
-  - class_label  : remapped to a contiguous 0‥N-1 range *within* each split,
+  - class_label  : remapped to a contiguous 0..N-1 range *within* each split,
                    because ArcFace's num_classes must equal the number of
                    unique identities actually present in the training set.
 
 Typical usage
-─────────────
+-------------
     from src.data.dataset import get_dataloader
 
     train_loader, num_classes = get_dataloader(
-        'data/processed/train/train.csv', split='train', batch_size=32
+        'data/processed/train/train.csv', split='train', batch_size=32,
+        augment_cfg=cfg['augmentation'],
     )
     val_loader, _ = get_dataloader(
         'data/processed/val/val.csv',   split='val',   batch_size=64
     )
 """
+
+import inspect
 
 import numpy as np
 import pandas as pd
@@ -31,7 +34,7 @@ import torchvision.transforms.functional as TF
 
 from src.data.preprocessing import augment as _augment_fn
 
-# ImageNet normalization constants — all three pretrained backbones were
+# ImageNet normalization constants - all three pretrained backbones were
 # trained with these; applying them here keeps the weight initialisation valid.
 _IMAGENET_MEAN = [0.485, 0.456, 0.406]
 _IMAGENET_STD  = [0.229, 0.224, 0.225]
@@ -45,21 +48,28 @@ class FingerprintDataset(Dataset):
     ----------
     csv_path : str
         Path to a processed split CSV (must contain 'processed_path' and
-        'class_label' columns — written by preprocessing.cache_processed_dataset).
+        'class_label' columns - written by preprocessing.cache_processed_dataset).
     augment_images : bool
-        If True, apply random augmentation (rotation, jitter, partial crop)
-        to each image at load time.  Should be True only for the training
-        split; val/test get deterministic preprocessing.
+        If True, apply random augmentation to each image at load time.
+        Should be True only for the training split; val/test get
+        deterministic preprocessing.
     alteration_filter : str | list[str] | None
         Keep only rows whose 'alteration' column matches this value (or list
         of values).  Useful for ablations:
-          - None        → all rows (real + all altered types)
-          - 'real'      → real images only
-          - ['real', 'central_rotation'] → real + one alteration type
+          - None        -> all rows (real + all altered types)
+          - 'real'      -> real images only
+          - ['real', 'central_rotation'] -> real + one alteration type
+    augment_cfg : dict | None
+        Augmentation settings (the 'augmentation:' section of config.yaml),
+        forwarded to preprocessing.augment(img, rng, cfg=...). Ignored when
+        augment_images is False.
+    seed : int | None
+        Seed for the augmentation RNG. If None, it is derived from the torch
+        seed (torch.manual_seed), so a seeded training run is reproducible.
     """
 
     def __init__(self, csv_path: str, augment_images: bool = False,
-                 alteration_filter=None):
+                 alteration_filter=None, augment_cfg=None, seed=None):
         self.df = pd.read_csv(csv_path)
         self.augment_images = augment_images
 
@@ -78,36 +88,52 @@ class FingerprintDataset(Dataset):
         self._label_map = {orig: new for new, orig in enumerate(unique_labels)}
         self.num_classes = len(unique_labels)
 
-        # Each worker gets its own RNG (see worker_init_fn below).
-        self._rng = np.random.default_rng()
+        # Plain Python lists are much cheaper to index per item than a pandas
+        # row lookup (df.iloc) - this runs ~40k times per epoch.
+        self._paths  = self.df["processed_path"].tolist()
+        self._labels = [self._label_map[int(c)] for c in self.df["class_label"]]
+
+        # Augmentation settings. If preprocessing.augment() has not been
+        # updated to accept `cfg`, say so instead of silently ignoring them.
+        self._augment_kwargs = {}
+        if augment_images and augment_cfg:
+            if "cfg" in inspect.signature(_augment_fn).parameters:
+                self._augment_kwargs["cfg"] = augment_cfg
+            else:
+                print("  WARNING: preprocessing.augment() has no 'cfg' parameter, so the "
+                      "augmentation settings are IGNORED (old augmentation is used).",
+                      flush=True)
+
+        # Each worker gets its own RNG (see worker_init_fn below). In the main
+        # process the RNG follows the torch seed, so seeded runs repeat.
+        if seed is None:
+            seed = torch.initial_seed() % (2 ** 32)
+        self._rng = np.random.default_rng(seed)
 
     # ------------------------------------------------------------------
     # Core Dataset interface
     # ------------------------------------------------------------------
 
     def __len__(self) -> int:
-        return len(self.df)
+        return len(self._paths)
 
     def __getitem__(self, idx: int):
-        row = self.df.iloc[idx]
-
-        # Load cached 128×128 float32 array in [0, 1]
-        img: np.ndarray = np.load(row["processed_path"])   # shape (H, W)
+        # Load cached 128x128 float32 array in [0, 1]
+        img: np.ndarray = np.load(self._paths[idx])   # shape (H, W)
 
         if self.augment_images:
-            img = _augment_fn(img, rng=self._rng)
+            img = _augment_fn(img, rng=self._rng, **self._augment_kwargs)
 
-        # (H, W) → (1, H, W) → (3, H, W)  by channel replication.
+        # (H, W) -> (1, H, W) -> (3, H, W)  by channel replication.
         # All three backbones expect 3-channel input and use ImageNet weights;
-        # replication is the standard approach for grayscale → pretrained RGB
+        # replication is the standard approach for grayscale -> pretrained RGB
         # networks (equivalent to "Option A" in the project guide).
         img_t = torch.from_numpy(img).unsqueeze(0).repeat(3, 1, 1)
 
         # ImageNet normalization
         img_t = TF.normalize(img_t, mean=_IMAGENET_MEAN, std=_IMAGENET_STD)
 
-        label = self._label_map[int(row["class_label"])]
-        return img_t, label
+        return img_t, self._labels[idx]
 
     # ------------------------------------------------------------------
     # Convenience helpers
@@ -125,9 +151,9 @@ class FingerprintDataset(Dataset):
         return row["class_id"]
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ------------------------------------------------------------------------------
 # Worker RNG seeding
-# ──────────────────────────────────────────────────────────────────────────────
+# ------------------------------------------------------------------------------
 
 def worker_init_fn(worker_id: int) -> None:
     """
@@ -138,15 +164,14 @@ def worker_init_fn(worker_id: int) -> None:
     """
     worker_info = torch.utils.data.get_worker_info()
     dataset = worker_info.dataset
-    # worker_info.seed is a unique uint64 per worker per epoch; mask to 32-bit
-    # because numpy's default_rng accepts any non-negative int but we keep it
-    # reasonable.
+    # worker_info.seed is a unique value per worker (derived from the torch
+    # seed); mask to 32-bit to keep it reasonable for numpy's default_rng.
     dataset._rng = np.random.default_rng(worker_info.seed % (2 ** 32))
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ------------------------------------------------------------------------------
 # Public factory function
-# ──────────────────────────────────────────────────────────────────────────────
+# ------------------------------------------------------------------------------
 
 def get_dataloader(
     csv_path: str,
@@ -155,6 +180,7 @@ def get_dataloader(
     num_workers: int = 4,
     alteration_filter=None,
     pin_memory: bool = True,
+    augment_cfg=None,
 ) -> tuple[DataLoader, int]:
     """
     Build a DataLoader for a given split CSV.
@@ -176,12 +202,15 @@ def get_dataloader(
     pin_memory : bool
         Pin CPU buffers for faster GPU transfer.  Automatically disabled if
         CUDA is not available.
+    augment_cfg : dict | None
+        Augmentation settings for the training split (see FingerprintDataset).
+        Has no effect for val/test.
 
     Returns
     -------
     loader : DataLoader
     num_classes : int
-        Number of unique finger identities in this split — pass this to the
+        Number of unique finger identities in this split - pass this to the
         ArcFace loss as ``num_classes``.
     """
     is_train = (split == "train")
@@ -190,6 +219,7 @@ def get_dataloader(
         csv_path=csv_path,
         augment_images=is_train,
         alteration_filter=alteration_filter,
+        augment_cfg=augment_cfg if is_train else None,
     )
 
     loader = DataLoader(
@@ -200,7 +230,7 @@ def get_dataloader(
         pin_memory=pin_memory and torch.cuda.is_available(),
         worker_init_fn=worker_init_fn if num_workers > 0 else None,
         # persistent_workers keeps worker processes alive across epochs,
-        # saving the fork overhead — meaningful with large num_workers.
+        # saving the fork overhead - meaningful with large num_workers.
         persistent_workers=(num_workers > 0),
         # Drop the last (possibly tiny) batch during training:
         # ArcFace with a near-empty batch can produce degenerate gradients.

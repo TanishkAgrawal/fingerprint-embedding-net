@@ -1,0 +1,109 @@
+{
+  "checkpoint": "checkpoints/tune/densenet121_regularised_margin20/best.pt",
+  "epoch": 16,
+  "backbone": "densenet121",
+  "loss_type": "arcface",
+  "embedding_dim": 512,
+  "n_images": 8179,
+  "n_identities": 900,
+  "verification_overall": {
+    "n_genuine": 33737,
+    "n_impostor": 168685,
+    "eer": 0.0018407017923891544,
+    "roc_auc": 0.9999683749173857,
+    "gap": 0.776826024055481,
+    "genuine_mean": 0.8071776032447815,
+    "impostor_mean": 0.030351607128977776
+  },
+  "verification_by_difficulty": {
+    "easy": {
+      "n_genuine": 2680,
+      "n_impostor": 36395,
+      "eer": 0.0003514203417580575,
+      "roc_auc": 0.9999996514200532,
+      "gap": 0.8853291273117065,
+      "genuine_mean": 0.9158197641372681,
+      "impostor_mean": 0.030490659177303314
+    },
+    "hard": {
+      "n_genuine": 2071,
+      "n_impostor": 36395,
+      "eer": 0.00283612497150898,
+      "roc_auc": 0.9999516809798387,
+      "gap": 0.7349729537963867,
+      "genuine_mean": 0.7654635906219482,
+      "impostor_mean": 0.030490659177303314
+    },
+    "medium": {
+      "n_genuine": 2528,
+      "n_impostor": 36395,
+      "eer": 0.0011841047089546919,
+      "roc_auc": 0.9999937395768301,
+      "gap": 0.8039426207542419,
+      "genuine_mean": 0.8344332575798035,
+      "impostor_mean": 0.030490659177303314
+    }
+  },
+  "verification_by_alteration": {
+    "central_rotation": {
+      "n_genuine": 2403,
+      "n_impostor": 36395,
+      "eer": 0.0016703166766092181,
+      "roc_auc": 0.99998327181466,
+      "gap": 0.7946119904518127,
+      "genuine_mean": 0.8251026272773743,
+      "impostor_mean": 0.030490659177303314
+    },
+    "obliteration": {
+      "n_genuine": 2681,
+      "n_impostor": 36395,
+      "eer": 0.00216308725066483,
+      "roc_auc": 0.9999717755558173,
+      "gap": 0.7867579460144043,
+      "genuine_mean": 0.8172485828399658,
+      "impostor_mean": 0.030490659177303314
+    },
+    "zcut": {
+      "n_genuine": 2195,
+      "n_impostor": 36395,
+      "eer": 0.0004613277269527316,
+      "roc_auc": 0.9999995618812942,
+      "gap": 0.8694429993629456,
+      "genuine_mean": 0.8999336361885071,
+      "impostor_mean": 0.030490659177303314
+    }
+  },
+  "identification": {
+    "n_gallery": 900,
+    "n_probe": 7279,
+    "mean_rank": 1.0100288501167742,
+    "rank_1": 0.9945047396620414,
+    "rank_5": 0.999862618491551,
+    "rank_10": 1.0,
+    "by_difficulty": {
+      "easy": {
+        "n_probe": 2680,
+        "rank_1": 0.9958955223880597,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "hard": {
+        "n_probe": 2071,
+        "rank_1": 0.9922742636407532,
+        "rank_5": 0.9995171414775471,
+        "rank_10": 1.0
+      },
+      "medium": {
+        "n_probe": 2528,
+        "rank_1": 0.9948575949367089,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      }
+    }
+  },
+  "plots": {
+    "histogram": "outputs/results\\tune\\densenet121_regularised_margin20\\histogram.png",
+    "roc": "outputs/results\\tune\\densenet121_regularised_margin20\\roc.png",
+    "cmc": "outputs/results\\tune\\densenet121_regularised_margin20\\cmc.png"
+  }
+}

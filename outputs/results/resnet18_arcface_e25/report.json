@@ -1,0 +1,109 @@
+{
+  "checkpoint": "checkpoints\\resnet18_arcface\\latest.pt",
+  "epoch": 25,
+  "backbone": "resnet18",
+  "loss_type": "arcface",
+  "embedding_dim": 512,
+  "n_images": 8179,
+  "n_identities": 900,
+  "verification_overall": {
+    "n_genuine": 33737,
+    "n_impostor": 168685,
+    "eer": 0.00029641218134202063,
+    "roc_auc": 0.9999796976795785,
+    "gap": 0.8581582903862,
+    "genuine_mean": 0.8695425987243652,
+    "impostor_mean": 0.01138430368155241
+  },
+  "verification_by_difficulty": {
+    "easy": {
+      "n_genuine": 2680,
+      "n_impostor": 36395,
+      "eer": 0.0,
+      "roc_auc": 1.0,
+      "gap": 0.9332036972045898,
+      "genuine_mean": 0.9447126388549805,
+      "impostor_mean": 0.011508965864777565
+    },
+    "hard": {
+      "n_genuine": 2071,
+      "n_impostor": 36395,
+      "eer": 0.00047497719060629606,
+      "roc_auc": 0.9999990447640166,
+      "gap": 0.8337836265563965,
+      "genuine_mean": 0.8452925682067871,
+      "impostor_mean": 0.011508965864777565
+    },
+    "medium": {
+      "n_genuine": 2528,
+      "n_impostor": 36395,
+      "eer": 0.0,
+      "roc_auc": 1.0,
+      "gap": 0.8837693929672241,
+      "genuine_mean": 0.8952783346176147,
+      "impostor_mean": 0.011508965864777565
+    }
+  },
+  "verification_by_alteration": {
+    "central_rotation": {
+      "n_genuine": 2403,
+      "n_impostor": 36395,
+      "eer": 0.0004141520767007023,
+      "roc_auc": 0.9999992224766896,
+      "gap": 0.8701284527778625,
+      "genuine_mean": 0.8816373944282532,
+      "impostor_mean": 0.011508965864777565
+    },
+    "obliteration": {
+      "n_genuine": 2681,
+      "n_impostor": 36395,
+      "eer": 2.7476302420836873e-05,
+      "roc_auc": 0.9999999590058908,
+      "gap": 0.8681991100311279,
+      "genuine_mean": 0.8797080516815186,
+      "impostor_mean": 0.011508965864777565
+    },
+    "zcut": {
+      "n_genuine": 2195,
+      "n_impostor": 36395,
+      "eer": 0.0,
+      "roc_auc": 1.0,
+      "gap": 0.9309161305427551,
+      "genuine_mean": 0.9424250721931458,
+      "impostor_mean": 0.011508965864777565
+    }
+  },
+  "identification": {
+    "n_gallery": 900,
+    "n_probe": 7279,
+    "mean_rank": 1.007281219947795,
+    "rank_1": 0.9954664102211842,
+    "rank_5": 1.0,
+    "rank_10": 1.0,
+    "by_difficulty": {
+      "easy": {
+        "n_probe": 2680,
+        "rank_1": 0.9951492537313433,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "hard": {
+        "n_probe": 2071,
+        "rank_1": 0.9966199903428296,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "medium": {
+        "n_probe": 2528,
+        "rank_1": 0.9948575949367089,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      }
+    }
+  },
+  "plots": {
+    "histogram": "outputs/results\\resnet18_arcface_e25\\histogram.png",
+    "roc": "outputs/results\\resnet18_arcface_e25\\roc.png",
+    "cmc": "outputs/results\\resnet18_arcface_e25\\cmc.png"
+  }
+}

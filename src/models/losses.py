@@ -30,7 +30,7 @@ Typical usage
     from src.models.losses import get_loss
 
     # ArcFace
-    criterion = get_loss('arcface', num_classes=4200, embedding_dim=128)
+    criterion = get_loss('arcface', num_classes=4200, embedding_dim=512)
     optimizer = torch.optim.AdamW([
         *model.get_param_groups(base_lr=1e-3),
         *criterion.get_optimizer_params(lr=1e-3),   # ← include loss params!
@@ -66,7 +66,7 @@ class ArcFaceLoss(nn.Module):
         the default SOCOFing split).  Must match the remapped labels from
         FingerprintDataset.num_classes.
     embedding_dim : int
-        Must match FingerprintEmbeddingNet.embedding_dim (default 128).
+        Must match FingerprintEmbeddingNet.embedding_dim (default 512).
     margin : float
         Angular margin in degrees (default 28.6° ≈ 0.5 rad — from the
         original ArcFace paper; standard for face/fingerprint tasks).
@@ -84,7 +84,7 @@ class ArcFaceLoss(nn.Module):
     def __init__(
         self,
         num_classes: int,
-        embedding_dim: int = 128,
+        embedding_dim: int = 512,
         margin: float = 28.6,
         scale: float = 64.0,
     ) -> None:
@@ -204,7 +204,7 @@ class TripletLoss(nn.Module):
 def get_loss(
     loss_type: str,
     num_classes: int = 0,
-    embedding_dim: int = 128,
+    embedding_dim: int = 512,
     **kwargs,
 ) -> nn.Module:
     """
@@ -228,7 +228,7 @@ def get_loss(
 
     Examples
     --------
-        arcface  = get_loss('arcface', num_classes=4200, embedding_dim=128)
+        arcface  = get_loss('arcface', num_classes=4200, embedding_dim=512)
         triplet  = get_loss('triplet', margin=0.2)
         triplet2 = get_loss('triplet', margin=0.3, type_of_triplets='hard')
     """

@@ -1,29 +1,68 @@
+# Single source of defaults for train / eval / tune.
+# tune_grid.yaml only lists keys that CHANGE in a trial (it overlays this file).
+#
+# Every EXISTING key below is unchanged, so the three finished baselines stay
+# reproducible. Keys marked NEW default to "off" or to the old hard-coded
+# behaviour, so they change nothing until a trial overrides them.
+#
+# FINISHED baselines - train.py refuses to write these unless you pass
+# --resume-baseline (only needed to continue VGG from epoch 14):
+#   checkpoints/resnet18_arcface     epoch 25  (evaluated)
+#   checkpoints/densenet_arcface     epoch 25  (evaluated; name is densenet not densenet121)
+#   checkpoints/vgg16_arcface        epoch 14  (evaluated; unfinished vs 25)
+#
+# Limited-time plan: do NOT retrain those three. ResNet-only tuning:
+#   python -m src.training.tune --dry-run
+#   python -m src.training.tune --backbone resnet18
+# Writes to checkpoints/tune/resnet18_<trial>/  (will not touch baselines).
+
 model:
   backbone: resnet18
-  embedding_dim: 512
+  embedding_dim: 512   # fixed for all runs
 
 loss:
   type: arcface
-  kwargs: {}   # e.g. margin: 28.6, scale: 64 for ArcFace
+  kwargs:
+    margin: 28.6       # degrees (pytorch-metric-learning convention)
+    scale: 64.0
 
 training:
-  device: cuda        # cuda = GPU required; auto = GPU if available else CPU; cpu = force CPU
-  cuda_device: 0      # which GPU when using CUDA
-  epochs: 25
+  device: cuda        # cuda | auto | cpu
+  cuda_device: 0
+  epochs: 20
   frozen_epochs: 10
   batch_size: 32
   learning_rate: 0.001
   backbone_lr_scale: 0.1
   weight_decay: 0.0005
   lr_decay: true
-  log_interval: 100   # print train progress every N batches (batch 1 always logged)
+  log_interval: 100
+  grad_clip_norm: 5.0      # max gradient norm. Baselines used 5.0 (hard-coded). 0 = off
+  early_stop_patience: 0   # NEW: stop after N epochs without val-EER gain, counted after unfreeze. 0 = off
+  phase2_lr_scale: 1.0     # NEW: multiplies ALL learning rates in phase 2 (try 0.5 if val EER jumps when the backbone unfreezes)
+  seed: 42                 # NEW: fixes random seeds (baselines were unseeded)
+  compute_val_loss: false  # NEW: ArcFace loss on val is not meaningful (val fingers are unseen); false skips an extra val pass
+
+# NEW: augmentation settings. Defaults equal the old hard-coded values in augment().
+augmentation:
+  rotation_deg: 20              # random rotation in [-x, +x] degrees
+  translate_frac: 0.0           # random shift, fraction of image size
+  scale_range: [1.0, 1.0]       # random zoom
+  contrast_range: [0.9, 1.1]
+  brightness_range: [-0.05, 0.05]
+  partial_crop_prob: 0.3        # chance of a partial-print crop
+  partial_crop_min_frac: 0.7
+  partial_crop_max_frac: 0.95
+  erase_prob: 0.0               # chance of blanking a small patch (occlusion)
+  noise_std: 0.0                # gaussian noise strength
 
 data:
   train_csv: data/processed/train/train.csv
   val_csv: data/processed/val/val.csv
   test_csv: data/processed/test/test.csv
-  num_workers: 0   # use 0 on Windows unless you're sure multiprocessing is safe
+  num_workers: 4       # optional speed-up: try 4; go back to 0 if Windows multiprocessing errors appear
 
 output:
   checkpoint_dir: checkpoints
   log_dir: outputs/logs
+  results_dir: outputs/results

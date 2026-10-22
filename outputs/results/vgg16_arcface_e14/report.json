@@ -1,0 +1,109 @@
+{
+  "checkpoint": "checkpoints/vgg16_arcface/latest.pt",
+  "epoch": 14,
+  "backbone": "vgg16",
+  "loss_type": "arcface",
+  "embedding_dim": 512,
+  "n_images": 8179,
+  "n_identities": 900,
+  "verification_overall": {
+    "n_genuine": 33737,
+    "n_impostor": 168685,
+    "eer": 0.0013338399585336447,
+    "roc_auc": 0.9999691285733139,
+    "gap": 0.9102458953857422,
+    "genuine_mean": 0.9303939938545227,
+    "impostor_mean": 0.020148124545812607
+  },
+  "verification_by_difficulty": {
+    "easy": {
+      "n_genuine": 2680,
+      "n_impostor": 36395,
+      "eer": 0.0003788966569118202,
+      "roc_auc": 0.9999992413259982,
+      "gap": 0.9517396092414856,
+      "genuine_mean": 0.9731262922286987,
+      "impostor_mean": 0.021386707201600075
+    },
+    "hard": {
+      "n_genuine": 2071,
+      "n_impostor": 36395,
+      "eer": 0.0019136469345539808,
+      "roc_auc": 0.9999873961918855,
+      "gap": 0.8911522626876831,
+      "genuine_mean": 0.9125389456748962,
+      "impostor_mean": 0.021386707201600075
+    },
+    "medium": {
+      "n_genuine": 2528,
+      "n_impostor": 36395,
+      "eer": 0.0007939726347103715,
+      "roc_auc": 0.9999969893451075,
+      "gap": 0.9211093187332153,
+      "genuine_mean": 0.9424960017204285,
+      "impostor_mean": 0.021386707201600075
+    }
+  },
+  "verification_by_alteration": {
+    "central_rotation": {
+      "n_genuine": 2403,
+      "n_impostor": 36395,
+      "eer": 0.0013111172011122108,
+      "roc_auc": 0.9999938598526811,
+      "gap": 0.915639340877533,
+      "genuine_mean": 0.9370260238647461,
+      "impostor_mean": 0.021386707201600075
+    },
+    "obliteration": {
+      "n_genuine": 2681,
+      "n_impostor": 36395,
+      "eer": 0.0014878420624881983,
+      "roc_auc": 0.9999927542911993,
+      "gap": 0.9114100933074951,
+      "genuine_mean": 0.9327967762947083,
+      "impostor_mean": 0.021386707201600075
+    },
+    "zcut": {
+      "n_genuine": 2195,
+      "n_impostor": 36395,
+      "eer": 0.0004613277269527316,
+      "roc_auc": 0.9999992864923934,
+      "gap": 0.9480780363082886,
+      "genuine_mean": 0.9694647192955017,
+      "impostor_mean": 0.021386707201600075
+    }
+  },
+  "identification": {
+    "n_gallery": 900,
+    "n_probe": 7279,
+    "mean_rank": 1.0103036131336722,
+    "rank_1": 0.9947795026789394,
+    "rank_5": 0.999862618491551,
+    "rank_10": 0.999862618491551,
+    "by_difficulty": {
+      "easy": {
+        "n_probe": 2680,
+        "rank_1": 0.9958955223880597,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      },
+      "hard": {
+        "n_probe": 2071,
+        "rank_1": 0.994205697730565,
+        "rank_5": 0.9995171414775471,
+        "rank_10": 0.9995171414775471
+      },
+      "medium": {
+        "n_probe": 2528,
+        "rank_1": 0.9940664556962026,
+        "rank_5": 1.0,
+        "rank_10": 1.0
+      }
+    }
+  },
+  "plots": {
+    "histogram": "outputs/results\\vgg16_arcface_e14\\histogram.png",
+    "roc": "outputs/results\\vgg16_arcface_e14\\roc.png",
+    "cmc": "outputs/results\\vgg16_arcface_e14\\cmc.png"
+  }
+}

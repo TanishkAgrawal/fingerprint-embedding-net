@@ -54,12 +54,25 @@ def resolve_device(cfg: dict) -> torch.device:
     sys.exit(1)
 
 
-def default_checkpoint(cfg: dict) -> str:
+def resolve_checkpoint(cfg: dict, which: str = "latest", explicit: str | None = None) -> str:
+    if explicit:
+        return explicit
     backbone = cfg["model"]["backbone"]
     loss_type = cfg["loss"]["type"]
-    return os.path.join(
-        cfg["output"]["checkpoint_dir"], f"{backbone}_{loss_type}", "latest.pt"
-    )
+    ckpt_root = cfg["output"]["checkpoint_dir"]
+    names = [f"{backbone}_{loss_type}"]
+    # Copied runs sometimes use a shorter folder name (densenet_arcface).
+    if backbone.startswith("densenet") and "densenet_arcface" not in names:
+        names.append(f"densenet_{loss_type}")
+    for name in names:
+        path = os.path.join(ckpt_root, name, f"{which}.pt")
+        if os.path.exists(path):
+            return path
+    return os.path.join(ckpt_root, names[0], f"{which}.pt")
+
+
+def default_checkpoint(cfg: dict) -> str:
+    return resolve_checkpoint(cfg, which="latest")
 
 
 def subset_indices(dataset: FingerprintDataset, max_images: int, seed: int) -> list[int]:
@@ -218,7 +231,7 @@ def main():
     parser.add_argument("--config", default="src/training/config.yaml")
     parser.add_argument("--checkpoint", default=None,
                         help="Explicit .pt path (overrides --which)")
-    parser.add_argument("--which", choices=["best", "latest"], default="best",
+    parser.add_argument("--which", choices=["best", "latest"], default="latest",
                         help="Which saved run to load when --checkpoint is omitted")
     parser.add_argument("--csv", default=None,
                         help="Override test CSV path from config")
@@ -232,9 +245,7 @@ def main():
 
     cfg = load_config(args.config)
     device = resolve_device(cfg)
-    ckpt_path = args.checkpoint or default_checkpoint(cfg)
-    if args.checkpoint is None and args.which == "latest":
-        ckpt_path = ckpt_path.replace("best.pt", "latest.pt")
+    ckpt_path = resolve_checkpoint(cfg, which=args.which, explicit=args.checkpoint)
     csv_path = args.csv or cfg["data"].get("test_csv", "data/processed/test/test.csv")
 
     if not os.path.exists(ckpt_path):
@@ -260,11 +271,10 @@ def main():
     _log(f"  Trained to epoch {epoch}  "
          f"(val_loss={ckpt.get('val_loss', float('nan')):.4f}{extra})")
     if args.checkpoint is None and args.which == "best" and isinstance(epoch, int) and epoch <= 2:
-        latest = default_checkpoint(cfg).replace("best.pt", "latest.pt")
+        latest = resolve_checkpoint(cfg, which="latest")
         if os.path.exists(latest):
-            _log("  NOTE     : best.pt is lowest ArcFace val-loss, often epoch 1")
-            _log("             on this open-set split. Last-epoch weights:")
-            _log("             python -m src.training.eval --config src/training/config.yaml --full --which latest")
+            _log("  NOTE     : best.pt can be an early epoch if ranked by ArcFace val-loss.")
+            _log("             Prefer --which latest, or a val-EER best.pt from a newer run.")
 
     model = FingerprintEmbeddingNet(backbone, embedding_dim, pretrained=False)
     model.load_state_dict(ckpt["model"])

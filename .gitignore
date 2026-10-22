@@ -14,13 +14,7 @@ stuff/
 # measured border/CLAHE/size settings.
 
 # --- Model artifacts and eval dumps (large, regenerable) ---
-checkpoints/
-outputs/
-*.pt
-*.pth
-*.ckpt
-*.npz
-
+/checkpoints
 # --- Python ---
 __pycache__/
 *.py[cod]
