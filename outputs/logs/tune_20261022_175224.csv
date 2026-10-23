@@ -1,0 +1,1 @@
+name,augmentation.erase_prob,augmentation.noise_std,augmentation.partial_crop_min_frac,augmentation.partial_crop_prob,augmentation.rotation_deg,augmentation.scale_range,augmentation.translate_frac,loss.kwargs.margin,training.backbone_lr_scale,training.frozen_epochs,training.weight_decay,best_val_eer,ckpt_dir,status

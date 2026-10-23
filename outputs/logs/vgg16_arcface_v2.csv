@@ -1,0 +1,2 @@
+epoch,phase,train_loss,val_loss,val_eer,val_gap,epoch_time_s
+1,1,38.283540,nan,0.141882,0.071991,868.7
