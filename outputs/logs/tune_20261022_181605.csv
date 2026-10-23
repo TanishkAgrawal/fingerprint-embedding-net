@@ -1,0 +1,4 @@
+name,augmentation.erase_prob,augmentation.noise_std,augmentation.partial_crop_min_frac,augmentation.partial_crop_prob,augmentation.rotation_deg,augmentation.scale_range,augmentation.translate_frac,loss.kwargs.margin,training.backbone_lr_scale,training.frozen_epochs,training.weight_decay,best_val_eer,ckpt_dir,status
+vgg16_regularised,0.25,0.02,0.6,0.4,30,"[0.9, 1.1]",0.08,,0.02,,0.001,0.001505,checkpoints\tune\vgg16_regularised,ok
+vgg16_regularised_margin20,0.25,0.02,0.6,0.4,30,"[0.9, 1.1]",0.08,20.0,0.02,,0.001,0.001273,checkpoints\tune\vgg16_regularised_margin20,ok
+vgg16_regularised_long_frozen,0.25,0.02,0.6,0.4,30,"[0.9, 1.1]",0.08,,0.02,10,0.001,0.002112,checkpoints\tune\vgg16_regularised_long_frozen,ok

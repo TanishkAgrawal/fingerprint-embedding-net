@@ -16,51 +16,52 @@
 #   python -m src.training.tune --backbone resnet18
 # Writes to checkpoints/tune/resnet18_<trial>/  (will not touch baselines).
 
+# DenseNet121 + ArcFace configuration
+
 model:
-  backbone: resnet18
-  embedding_dim: 512   # fixed for all runs
+  backbone: vgg16
+  embedding_dim: 512
 
 loss:
   type: arcface
   kwargs:
-    margin: 28.6       # degrees (pytorch-metric-learning convention)
+    margin: 28.6
     scale: 64.0
 
 training:
-  device: cuda        # cuda | auto | cpu
+  device: cuda
   cuda_device: 0
-  epochs: 20
+  epochs: 25
   frozen_epochs: 10
-  batch_size: 32
+  batch_size: 8
   learning_rate: 0.001
   backbone_lr_scale: 0.1
   weight_decay: 0.0005
   lr_decay: true
   log_interval: 100
-  grad_clip_norm: 5.0      # max gradient norm. Baselines used 5.0 (hard-coded). 0 = off
-  early_stop_patience: 0   # NEW: stop after N epochs without val-EER gain, counted after unfreeze. 0 = off
-  phase2_lr_scale: 1.0     # NEW: multiplies ALL learning rates in phase 2 (try 0.5 if val EER jumps when the backbone unfreezes)
-  seed: 42                 # NEW: fixes random seeds (baselines were unseeded)
-  compute_val_loss: false  # NEW: ArcFace loss on val is not meaningful (val fingers are unseen); false skips an extra val pass
+  grad_clip_norm: 5.0
+  early_stop_patience: 0
+  phase2_lr_scale: 1.0
+  seed: 42
+  compute_val_loss: false
 
-# NEW: augmentation settings. Defaults equal the old hard-coded values in augment().
 augmentation:
-  rotation_deg: 20              # random rotation in [-x, +x] degrees
-  translate_frac: 0.0           # random shift, fraction of image size
-  scale_range: [1.0, 1.0]       # random zoom
+  rotation_deg: 20
+  translate_frac: 0.0
+  scale_range: [1.0, 1.0]
   contrast_range: [0.9, 1.1]
   brightness_range: [-0.05, 0.05]
-  partial_crop_prob: 0.3        # chance of a partial-print crop
+  partial_crop_prob: 0.3
   partial_crop_min_frac: 0.7
   partial_crop_max_frac: 0.95
-  erase_prob: 0.0               # chance of blanking a small patch (occlusion)
-  noise_std: 0.0                # gaussian noise strength
+  erase_prob: 0.0
+  noise_std: 0.0
 
 data:
   train_csv: data/processed/train/train.csv
   val_csv: data/processed/val/val.csv
   test_csv: data/processed/test/test.csv
-  num_workers: 4       # optional speed-up: try 4; go back to 0 if Windows multiprocessing errors appear
+  num_workers: 0
 
 output:
   checkpoint_dir: checkpoints

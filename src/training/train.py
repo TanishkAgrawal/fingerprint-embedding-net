@@ -146,6 +146,8 @@ def train_one_epoch(
     grad_clip_norm: float = 5.0,
 ):
     model.train()
+    if not any(p.requires_grad for p in model.backbone.parameters()):
+        model.backbone.eval()
     total_loss, n_batches = 0.0, 0
     n_total = len(loader)
     pin = device.type == "cuda"
