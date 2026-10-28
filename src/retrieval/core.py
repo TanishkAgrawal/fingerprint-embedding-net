@@ -54,7 +54,7 @@ def real_mask(df: pd.DataFrame):
     for col in ("original_path", "orig_path", "raw_path", "source_path", "source_file", "file_path", "image_path", "filepath", "path"):
         if col in df:
             v = df[col].astype(str).str.replace("\\", "/", regex=False).str.lower()
-            mask = v.str.contains(r"(^|/)real/", regex=True)
+            mask = v.str.contains(r"(?:^|/)real/", regex=True)
             if mask.any():
                 return mask.to_numpy()
     return None

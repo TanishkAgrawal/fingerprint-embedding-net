@@ -1,0 +1,10 @@
+{
+  "checkpoint": "checkpoints/resnet18_regularised/best (4).pt",
+  "test_csv": "data/processed/test/test.csv",
+  "backbone": "resnet18",
+  "embedding_dim": 512,
+  "gallery_size": 900,
+  "query_size": 7279,
+  "real_images_detected": true,
+  "note": "Each CSV row is one fingerprint IMAGE; class_id identifies a finger."
+}
