@@ -1,0 +1,344 @@
+[
+  {
+    "method": "A: shared-pair verification",
+    "model": "densenet121_arcface__best",
+    "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.0000%; AUC 1.000000",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/densenet121_arcface__best.json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "densenet121_regularised__best",
+    "checkpoint": "checkpoints/densenet121_regularised/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.1000%; AUC 0.999982",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/densenet121_regularised__best.json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "densenet121_regularised_long_frozen__best (2)",
+    "checkpoint": "checkpoints/densenet121_regularised_long_frozen/best (2).pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.5000%; AUC 0.999835",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/densenet121_regularised_long_frozen__best (2).json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "densenet121_regularised_margin20__best (3)",
+    "checkpoint": "checkpoints/densenet121_regularised_margin20/best (3).pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.1000%; AUC 0.999969",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/densenet121_regularised_margin20__best (3).json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "resnet18_arcface__best",
+    "checkpoint": "checkpoints/resnet18_arcface/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 14.6000%; AUC 0.936460",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/resnet18_arcface__best.json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "resnet18_regularised__best (4)",
+    "checkpoint": "checkpoints/resnet18_regularised/best (4).pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.2000%; AUC 0.999953",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/resnet18_regularised__best (4).json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "resnet18_regularised_long_frozen__best (5)",
+    "checkpoint": "checkpoints/resnet18_regularised_long_frozen/best (5).pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.6000%; AUC 0.999789",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/resnet18_regularised_long_frozen__best (5).json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "resnet18_regularised_margin20__best (6)",
+    "checkpoint": "checkpoints/resnet18_regularised_margin20/best (6).pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.2000%; AUC 0.999958",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/resnet18_regularised_margin20__best (6).json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "tune__vgg16_regularised__best",
+    "checkpoint": "checkpoints/tune/vgg16_regularised/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.1000%; AUC 0.999993",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/tune__vgg16_regularised__best.json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "tune__vgg16_regularised_long_frozen__best",
+    "checkpoint": "checkpoints/tune/vgg16_regularised_long_frozen/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.2000%; AUC 0.999967",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/tune__vgg16_regularised_long_frozen__best.json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "tune__vgg16_regularised_margin20__best",
+    "checkpoint": "checkpoints/tune/vgg16_regularised_margin20/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 0.3000%; AUC 0.999972",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/tune__vgg16_regularised_margin20__best.json"
+  },
+  {
+    "method": "A: shared-pair verification",
+    "model": "vgg16_arcface_v2__best",
+    "checkpoint": "checkpoints/vgg16_arcface_v2/best.pt",
+    "sample": "1,000 genuine + 1,000 impostor pairs; 3,179 images; seed 42",
+    "result": "EER 16.0000%; AUC 0.919528",
+    "status": "Saved result",
+    "source": "outputs/eer_comparison/vgg16_arcface_v2__best.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "densenet121 (epoch 25)",
+    "checkpoint": "checkpoints/densenet_arcface/latest.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.0065%; AUC 0.999982; Rank-1 99.6153%; Recall@5 100.0000%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/densenet121_arcface_e25/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "resnet18 (epoch 25)",
+    "checkpoint": "checkpoints/resnet18_arcface/latest.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.0296%; AUC 0.999980; Rank-1 99.5466%; Recall@5 100.0000%",
+    "status": "Historical report; checkpoint bytes not fingerprinted",
+    "source": "outputs/results/resnet18_arcface_e25/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "densenet121 (epoch 15)",
+    "checkpoint": "checkpoints/tune/densenet121_regularised/best.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.2401%; AUC 0.999957; Rank-1 99.4367%; Recall@5 100.0000%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/tune/densenet121_regularised/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "densenet121 (epoch 16)",
+    "checkpoint": "checkpoints/tune/densenet121_regularised_long_frozen/best.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.5359%; AUC 0.999825; Rank-1 98.9284%; Recall@5 99.9313%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/tune/densenet121_regularised_long_frozen/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "densenet121 (epoch 16)",
+    "checkpoint": "checkpoints/tune/densenet121_regularised_margin20/best.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.1841%; AUC 0.999968; Rank-1 99.4505%; Recall@5 99.9863%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/tune/densenet121_regularised_margin20/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "resnet18 (epoch 16)",
+    "checkpoint": "checkpoints/tune/resnet18_regularised/best.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.2019%; AUC 0.999967; Rank-1 99.4642%; Recall@5 100.0000%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/tune/resnet18_regularised/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "resnet18 (epoch 16)",
+    "checkpoint": "checkpoints/tune/resnet18_regularised_long_frozen/best.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.4621%; AUC 0.999865; Rank-1 98.5163%; Recall@5 99.6978%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/tune/resnet18_regularised_long_frozen/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "resnet18 (epoch 16)",
+    "checkpoint": "checkpoints/tune/resnet18_regularised_margin20/best.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.1633%; AUC 0.999973; Rank-1 99.4505%; Recall@5 100.0000%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/tune/resnet18_regularised_margin20/report.json"
+  },
+  {
+    "method": "B: historical local full evaluation",
+    "model": "vgg16 (epoch 14)",
+    "checkpoint": "checkpoints/vgg16_arcface/latest.pt",
+    "sample": "33,737 genuine + 168,685 impostor pairs; 900 gallery / 7,279 probes",
+    "result": "EER 0.1334%; AUC 0.999969; Rank-1 99.4780%; Recall@5 99.9863%",
+    "status": "Historical report; checkpoint bytes not fingerprinted; recorded checkpoint path missing",
+    "source": "outputs/results/vgg16_arcface_e14/report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "densenet121",
+    "checkpoint": "checkpoints/densenet121_arcface/latest.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.5604%; Recall@5 100.0000%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/densenet121/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "densenet121_regularised",
+    "checkpoint": "checkpoints/densenet121_regularised/best.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.4780%; Recall@5 100.0000%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/densenet121_regularised/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "densenet121_regularised_long_frozen",
+    "checkpoint": "checkpoints/densenet121_regularised_long_frozen/best (2).pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 98.9834%; Recall@5 99.9313%; Recall@10 99.9863%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/densenet121_regularised_long_frozen/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "densenet121_regularised_margin20",
+    "checkpoint": "checkpoints/densenet121_regularised_margin20/best (3).pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.4230%; Recall@5 99.9863%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/densenet121_regularised_margin20/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "resnet18_latest",
+    "checkpoint": "checkpoints/resnet18_arcface/latest.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.5604%; Recall@5 100.0000%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/resnet18_latest/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "resnet18_regularised",
+    "checkpoint": "checkpoints/resnet18_regularised/best (4).pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.4780%; Recall@5 100.0000%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/resnet18_regularised/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "resnet18_regularised_long_frozen",
+    "checkpoint": "checkpoints/resnet18_regularised_long_frozen/best (5).pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 98.4613%; Recall@5 99.6978%; Recall@10 99.8214%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/resnet18_regularised_long_frozen/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "resnet18_regularised_margin20",
+    "checkpoint": "checkpoints/resnet18_regularised_margin20/best (6).pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.4780%; Recall@5 100.0000%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/resnet18_regularised_margin20/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "vgg16_original",
+    "checkpoint": "checkpoints/vgg16_arcface_v2/best.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 56.5462%; Recall@5 72.2627%; Recall@10 78.4036%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/vgg16_original/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "vgg16_regularised",
+    "checkpoint": "checkpoints/tune/vgg16_regularised/best.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.4642%; Recall@5 99.9863%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/vgg16_regularised/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "vgg16_regularised_long_frozen",
+    "checkpoint": "checkpoints/tune/vgg16_regularised_long_frozen/best.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.1070%; Recall@5 99.9588%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/vgg16_regularised_long_frozen/eval_report.json"
+  },
+  {
+    "method": "C: historical enrollment retrieval",
+    "model": "vgg16_regularised_margin20",
+    "checkpoint": "checkpoints/tune/vgg16_regularised_margin20/best.pt",
+    "sample": "900 enrolled fingers / 7,279 queries",
+    "result": "Rank-1 99.5192%; Recall@5 100.0000%; Recall@10 100.0000%",
+    "status": "Historical report; not a fresh Pinecone evaluation",
+    "source": "outputs/retrieval/vgg16_regularised_margin20/eval_report.json"
+  },
+  {
+    "method": "D: Pinecone archive, exact self removed",
+    "model": "densenet121_arcface",
+    "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+    "sample": "100 people / 1,000 queries; validation + test; seed 42",
+    "result": "candidate position 1: 99.9000%; candidate position 3: 99.7000%; candidate position 5: 99.4000%",
+    "status": "Reconciled with query-level results; checkpoint from archive manifests",
+    "source": "outputs/person_evaluation/densenet121_arcface/summary.json"
+  },
+  {
+    "method": "D: Pinecone archive, exact self removed",
+    "model": "resnet18",
+    "checkpoint": "checkpoints/resnet18_arcface/best.pt",
+    "sample": "100 people / 1,000 queries; validation + test; seed 42",
+    "result": "candidate position 1: 78.9000%; candidate position 3: 42.5000%; candidate position 5: 24.7000%",
+    "status": "Reconciled with query-level results; checkpoint from archive manifests",
+    "source": "outputs/person_evaluation/resnet18/summary.json"
+  },
+  {
+    "method": "E: validation threshold calibration",
+    "model": "densenet121_arcface",
+    "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+    "sample": "34,557 genuine + 50,000 sampled impostor validation pairs",
+    "result": "Threshold 0.332696; FAR 0.1000%; FRR 0.0203%",
+    "status": "Saved result",
+    "source": "outputs/retrieval/densenet121_final/threshold.json"
+  },
+  {
+    "method": "F: final Pinecone enrollment evaluation",
+    "model": "densenet121_arcface",
+    "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+    "sample": "900 enrolled fingers / 7,279 intended queries",
+    "result": "No completed full evaluation report; accuracy not available",
+    "status": "Pending",
+    "source": "outputs/retrieval/densenet121_final/manifest.json"
+  },
+  {
+    "method": "G: current subject-scoped frontend",
+    "model": "densenet121_arcface",
+    "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+    "sample": "User-selected subject and image; exact query and duplicate paths excluded",
+    "result": "Interactive similarity ranking; no aggregate accuracy measured",
+    "status": "Demo only",
+    "source": "src/retrieval/subject_comparison.py"
+  }
+]

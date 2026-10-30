@@ -1,0 +1,19 @@
+[1] National Institute of Justice, The Fingerprint Sourcebook, 2011. https://nij.ojp.gov/library/publications/fingerprint-sourcebook
+
+[2] National Institute of Standards and Technology, Human Factors in Latent Print Analysis. https://www.nist.gov/programs-projects/human-factors-latent-print-analysis
+
+[3] J. J. Engelsma, K. Cao and A. K. Jain, Learning a Fixed-Length Fingerprint Representation, arXiv:1909.09901, 2019. https://arxiv.org/abs/1909.09901
+
+[4] G. Huang, Z. Liu, L. van der Maaten and K. Q. Weinberger, Densely Connected Convolutional Networks, Proceedings of CVPR, pp. 4700-4708, 2017. https://openaccess.thecvf.com/content_cvpr_2017/html/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.html
+
+[5] K. He, X. Zhang, S. Ren and J. Sun, Deep Residual Learning for Image Recognition, Proceedings of CVPR, 2016. https://arxiv.org/abs/1512.03385
+
+[6] K. Simonyan and A. Zisserman, Very Deep Convolutional Networks for Large-Scale Image Recognition, arXiv:1409.1556, 2014. https://arxiv.org/abs/1409.1556
+
+[7] J. Deng, J. Guo, N. Xue and S. Zafeiriou, ArcFace: Additive Angular Margin Loss for Deep Face Recognition, Proceedings of CVPR, 2019. https://openaccess.thecvf.com/content_CVPR_2019/html/Deng_ArcFace_Additive_Angular_Margin_Loss_for_Deep_Face_Recognition_CVPR_2019_paper.html
+
+[8] Y. I. Shehu, A. Ruiz-Garcia, V. Palade and A. James, Sokoto Coventry Fingerprint Dataset, arXiv:1807.10609, 2018. https://arxiv.org/abs/1807.10609
+
+[9] Pinecone, Python SDK documentation, vector operations. https://sdk.pinecone.io/python/reference/sync-index.html
+
+[10] PyTorch, Torchvision models documentation. https://pytorch.org/vision/stable/models.html

@@ -1,0 +1,10 @@
+flowchart LR
+    N0["Grayscale border trim"]
+    N1["Optional denoise"]
+    N2["CLAHE enhancement"]
+    N3["Optional ROI crop"]
+    N4["Pad, resize normalise"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4

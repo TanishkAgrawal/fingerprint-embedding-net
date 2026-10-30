@@ -1,0 +1,17 @@
+{
+  "model": "tune__vgg16_regularised_long_frozen__best",
+  "checkpoint": "checkpoints\\tune\\vgg16_regularised_long_frozen\\best.pt",
+  "backbone": "vgg16",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.002,
+  "auc": 0.9999669999999999,
+  "nearest_threshold": 0.9936721920967102,
+  "far_at_threshold": 0.002,
+  "frr_at_threshold": 0.0020000000000000018,
+  "genuine_mean": 0.9987660050392151,
+  "impostor_mean": 0.9647405743598938
+}

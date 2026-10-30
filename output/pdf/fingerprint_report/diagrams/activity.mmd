@@ -1,0 +1,10 @@
+flowchart LR
+    N0["Prepare dataset"]
+    N1["Generate embeddings"]
+    N2["Upsert vectors"]
+    N3["Select saved query"]
+    N4["Review candidates"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4

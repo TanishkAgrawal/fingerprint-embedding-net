@@ -1,0 +1,10 @@
+flowchart LR
+    N0["Dataset or query source"]
+    N1["Embedding service"]
+    N2["Pinecone vector store"]
+    N3["Search results"]
+    N4["Reviewer assessment"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4

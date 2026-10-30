@@ -1,0 +1,17 @@
+{
+  "model": "resnet18_regularised_margin20__best (6)",
+  "checkpoint": "checkpoints\\resnet18_regularised_margin20\\best (6).pt",
+  "backbone": "resnet18",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.002,
+  "auc": 0.999958,
+  "nearest_threshold": 0.4801653027534485,
+  "far_at_threshold": 0.002,
+  "frr_at_threshold": 0.0020000000000000018,
+  "genuine_mean": 0.844639778137207,
+  "impostor_mean": 0.026272639632225037
+}

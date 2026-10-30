@@ -1,0 +1,17 @@
+{
+  "model": "densenet121_arcface__best",
+  "checkpoint": "checkpoints\\densenet121_arcface\\best.pt",
+  "backbone": "densenet121",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.0,
+  "auc": 1.0,
+  "nearest_threshold": 0.5404912829399109,
+  "far_at_threshold": 0.0,
+  "frr_at_threshold": 0.0,
+  "genuine_mean": 0.8708572387695312,
+  "impostor_mean": 0.029503077268600464
+}

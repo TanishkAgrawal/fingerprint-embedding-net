@@ -1,0 +1,13 @@
+{
+  "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+  "val_csv": "data/processed/val/val.csv",
+  "backbone": "densenet121",
+  "embedding_dim": 512,
+  "target_far": 0.001,
+  "threshold": 0.3326960504055023,
+  "empirical_val_far": 0.001,
+  "empirical_val_frr": 0.00020256387996643227,
+  "genuine_pairs": 34557,
+  "sampled_impostor_pairs": 50000,
+  "warning": "Threshold from validation verification pairs; evaluate open-set rejection separately."
+}

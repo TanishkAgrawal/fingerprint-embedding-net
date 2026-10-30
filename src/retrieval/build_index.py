@@ -25,7 +25,7 @@ def main():
                 "gallery_size": len(gallery_ids), "query_size": len(query_ids),
                 "real_images_detected": detected,
                 "note": "Each CSV row is one fingerprint IMAGE; class_id identifies a finger."})
-    print(f"Saved FAISS index and metadata to {args.index_dir}")
+    print(f"Saved Pinecone embeddings and local metadata to {args.index_dir}")
 
 if __name__ == "__main__":
     main()

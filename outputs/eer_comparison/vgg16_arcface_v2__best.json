@@ -1,0 +1,17 @@
+{
+  "model": "vgg16_arcface_v2__best",
+  "checkpoint": "checkpoints\\vgg16_arcface_v2\\best.pt",
+  "backbone": "vgg16",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.16,
+  "auc": 0.9195279999999999,
+  "nearest_threshold": 0.9545741677284241,
+  "far_at_threshold": 0.16,
+  "frr_at_threshold": 0.16000000000000003,
+  "genuine_mean": 0.972699761390686,
+  "impostor_mean": 0.9071040153503418
+}

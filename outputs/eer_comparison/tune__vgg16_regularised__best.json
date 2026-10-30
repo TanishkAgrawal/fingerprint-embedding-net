@@ -1,0 +1,17 @@
+{
+  "model": "tune__vgg16_regularised__best",
+  "checkpoint": "checkpoints\\tune\\vgg16_regularised\\best.pt",
+  "backbone": "vgg16",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.0010000000000000009,
+  "auc": 0.999993,
+  "nearest_threshold": 0.9940054416656494,
+  "far_at_threshold": 0.001,
+  "frr_at_threshold": 0.0010000000000000009,
+  "genuine_mean": 0.9988641738891602,
+  "impostor_mean": 0.9682231545448303
+}

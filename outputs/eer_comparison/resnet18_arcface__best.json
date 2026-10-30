@@ -1,0 +1,17 @@
+{
+  "model": "resnet18_arcface__best",
+  "checkpoint": "checkpoints\\resnet18_arcface\\best.pt",
+  "backbone": "resnet18",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.146,
+  "auc": 0.9364595,
+  "nearest_threshold": 0.9734178781509399,
+  "far_at_threshold": 0.146,
+  "frr_at_threshold": 0.14600000000000002,
+  "genuine_mean": 0.9819619059562683,
+  "impostor_mean": 0.9626723527908325
+}

@@ -1,0 +1,17 @@
+{
+  "model": "densenet121_regularised__best",
+  "checkpoint": "checkpoints\\densenet121_regularised\\best.pt",
+  "backbone": "densenet121",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.001,
+  "auc": 0.999982,
+  "nearest_threshold": 0.42077237367630005,
+  "far_at_threshold": 0.001,
+  "frr_at_threshold": 0.0010000000000000009,
+  "genuine_mean": 0.8154731392860413,
+  "impostor_mean": 0.043218519538640976
+}

@@ -1,0 +1,10 @@
+flowchart LR
+    N0["128 x 128 three channels"]
+    N1["DenseNet121 dense blocks"]
+    N2["Global average pooling"]
+    N3["Linear 512 values"]
+    N4["L2 normalisation"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
