@@ -1,4 +1,4 @@
-"""Read-only evaluation of an existing SOCOFing fingerprint FAISS gallery.
+"""Read-only evaluation of an existing SOCOFing fingerprint Pinecone gallery.
 
 Usage: python -m src.retrieval.evaluate_detailed --index-dir outputs/retrieval/densenet121
 No training, checkpoint writes, index rebuilding or LLM inference.
@@ -8,10 +8,10 @@ import json
 import math
 import re
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
-import faiss
 import numpy as np
 import pandas as pd
 from src.data.dataset import FingerprintDataset
@@ -211,12 +211,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--index-dir", default="outputs/retrieval/densenet121")
     parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--query-workers", type=int, default=8, help="Concurrent Pinecone requests")
     parser.add_argument("--no-write", action="store_true", help="Print only; do not create eval_report.json")
     args = parser.parse_args()
+    if args.query_workers < 1:
+        parser.error("--query-workers must be positive")
     root = Path(args.index_dir)
     index, gallery, queries, manifest = load_index(root)
-    if not isinstance(faiss.downcast_index(index), faiss.IndexFlatIP):
-        raise RuntimeError("Expected exact FAISS IndexFlatIP; refusing to silently change matching logic")
     if len(gallery) != index.ntotal:
         raise ValueError("Index vector count does not equal gallery metadata row count")
     if len(gallery) < 10:
@@ -257,14 +258,25 @@ def main():
 
     model, device, backbone, dim = load_model(manifest["checkpoint"])
     if dim != index.d or int(manifest.get("embedding_dim", dim)) != dim:
-        raise ValueError("Model checkpoint embedding dimension and FAISS index do not match")
+        raise ValueError("Model checkpoint embedding dimension and Pinecone index do not match")
     if manifest.get("backbone") and manifest["backbone"] != backbone:
         raise ValueError("Manifest backbone mismatches checkpoint")
     dataset = FingerprintDataset(manifest["test_csv"], augment_images=False)
     if len(dataset) <= max(queries["csv_row"].astype(int)):
         raise ValueError("Query indices exceed test dataset length")
     vec = embed_rows(model, device, dataset, queries["csv_row"].astype(int).tolist(), args.batch_size)
-    scores, idx = index.search(vec, min(max(K_VALUES), int(index.ntotal)))
+    k = min(max(K_VALUES), int(index.ntotal))
+    def search_one(vector):
+        return index.search(vector[None, :], k)
+    results = []
+    with ThreadPoolExecutor(max_workers=args.query_workers) as pool:
+        # map preserves query order even when requests finish out of order.
+        for result in pool.map(search_one, vec):
+            results.append(result)
+            if len(results) % 500 == 0 or len(results) == len(vec):
+                print(f"Searched {len(results)}/{len(vec)} queries", flush=True)
+    scores = np.concatenate([result[0] for result in results])
+    idx = np.concatenate([result[1] for result in results])
     found = gallery_ids.to_numpy()[idx] == queries["class_id"].to_numpy()[:, None]
 
     threshold_path = root / "threshold.json"
@@ -272,6 +284,8 @@ def main():
     accepted = None
     if threshold_path.exists():
         threshold_info = json.loads(threshold_path.read_text(encoding="utf-8"))
+        if Path(threshold_info["checkpoint"]).resolve() != Path(manifest["checkpoint"]).resolve():
+            raise ValueError("Threshold calibration checkpoint mismatches gallery checkpoint")
         threshold = float(threshold_info["threshold"])
         if not math.isfinite(threshold):
             raise ValueError("Invalid non-finite threshold")
@@ -325,6 +339,8 @@ def main():
         "index_dir": str(root), "backbone": backbone, "embedding_dim": dim,
         "checkpoint_read_only": manifest["checkpoint"], "gallery_size": int(index.ntotal),
         "full_gallery_used_for_every_search": True,
+        "retrieval_backend": "pinecone",
+        "search_is_approximate": True,
         "gallery_all_real_proved_by_metadata": real_verified,
         "query_difficulty_counts": dict(Counter(queries["eval_difficulty"])),
         "identity_strata_counts": dict(Counter(strata.values())),

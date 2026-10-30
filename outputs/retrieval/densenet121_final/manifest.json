@@ -1,0 +1,13 @@
+{
+  "checkpoint": "checkpoints/densenet121_arcface/best.pt",
+  "test_csv": "data/processed/test/test.csv",
+  "backbone": "densenet121",
+  "embedding_dim": 512,
+  "gallery_size": 900,
+  "query_size": 7279,
+  "real_images_detected": true,
+  "note": "Each CSV row is one fingerprint IMAGE; class_id identifies a finger.",
+  "storage": "pinecone",
+  "pinecone_index": "fingerprint-embeddings",
+  "pinecone_namespace": "densenet121_final-c5be6130ea0a485b9ad158a015203b84"
+}

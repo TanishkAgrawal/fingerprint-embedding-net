@@ -1,0 +1,17 @@
+{
+  "model": "resnet18_regularised_long_frozen__best (5)",
+  "checkpoint": "checkpoints\\resnet18_regularised_long_frozen\\best (5).pt",
+  "backbone": "resnet18",
+  "dimension": 512,
+  "seed": 42,
+  "genuine_pairs": 1000,
+  "impostor_pairs": 1000,
+  "unique_images": 3179,
+  "eer": 0.006000000000000005,
+  "auc": 0.9997889999999999,
+  "nearest_threshold": 0.5423411726951599,
+  "far_at_threshold": 0.006,
+  "frr_at_threshold": 0.006000000000000005,
+  "genuine_mean": 0.8363698720932007,
+  "impostor_mean": 0.033966828137636185
+}

@@ -1,0 +1,14 @@
+{
+  "seed": 42,
+  "people": 100,
+  "queries": 1000,
+  "index": "fingerprint-embeddings",
+  "method": "Remove exact query ID; compare 1st, 3rd, 5th remaining candidate by finger class_id",
+  "caveat": "Validation/test subjects; searches within same split and include other images of each finger. Not open-set evaluation.",
+  "self_not_first": 0,
+  "average_accuracy": {
+    "rank2": 0.7890000000000001,
+    "rank4": 0.42500000000000004,
+    "rank6": 0.247
+  }
+}

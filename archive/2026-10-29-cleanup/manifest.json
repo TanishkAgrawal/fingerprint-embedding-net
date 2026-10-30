@@ -1,0 +1,58 @@
+[
+  {
+    "original": "demo_test.py",
+    "archived": "archive/2026-10-29-cleanup/diagnostics/demo_test.py",
+    "bytes": 550,
+    "sha256": "916F6A76A9DEC5A1FA89430FB90EF9087972F2B5E74F528BFEB39FA226ED26BD",
+    "reason": "One-off border statistics; core border measurement remains in src/data/measure_border.py."
+  },
+  {
+    "original": "eval_histogram.py",
+    "archived": "archive/2026-10-29-cleanup/diagnostics/eval_histogram.py",
+    "bytes": 2068,
+    "sha256": "BDD7C463C103412E451A04E839F1507C16BCEE2209726937A6D73FC9046002B0",
+    "reason": "Standalone historical plotting helper; full_eval.py already generates result histograms."
+  },
+  {
+    "original": "src/data/checkup.py",
+    "archived": "archive/2026-10-29-cleanup/diagnostics/src/data/checkup.py",
+    "bytes": 469,
+    "sha256": "8DFB897289CEE51EB7A57AF21A390C5B2A43BCC383C30751265B77A187CB7E4C",
+    "reason": "Optional processed-array integrity diagnostic; not part of runtime imports."
+  },
+  {
+    "original": "output/pdf/fingerprint_report/qa_1.png",
+    "archived": "archive/2026-10-29-cleanup/report-inspection/output/pdf/fingerprint_report/qa_1.png",
+    "bytes": 232693,
+    "sha256": "98ADDCBC11FCE187B7A15DC8DE91E3748167F2B5A7273F94CE78ABC152BA0533",
+    "reason": "Temporary report visual inspection image."
+  },
+  {
+    "original": "output/pdf/fingerprint_report/qa_15.png",
+    "archived": "archive/2026-10-29-cleanup/report-inspection/output/pdf/fingerprint_report/qa_15.png",
+    "bytes": 404622,
+    "sha256": "0FAC75974C9E01E81A38A4EF0FA3FB20C9CB79E913811D10CC6DB7C4854CF980",
+    "reason": "Temporary report visual inspection image."
+  },
+  {
+    "original": "output/pdf/fingerprint_report/final_page14.png",
+    "archived": "archive/2026-10-29-cleanup/report-inspection/output/pdf/fingerprint_report/final_page14.png",
+    "bytes": 73506,
+    "sha256": "5828CEC95D4D5C963EC6AA2D36FC113D144D7DBFBEBC3C54E8F08DF1EF6FCE7E",
+    "reason": "Temporary report page inspection image."
+  },
+  {
+    "original": "output/pdf/fingerprint_report/report_contact.png",
+    "archived": "archive/2026-10-29-cleanup/report-inspection/output/pdf/fingerprint_report/report_contact.png",
+    "bytes": 527188,
+    "sha256": "7D4A77A7588CA63D14DD7B54D9DE4878F79414D81F743098EC1E5BC8FC40EAF1",
+    "reason": "Report contact sheet used for visual inspection."
+  },
+  {
+    "original": "output/pdf/fingerprint_report/reference_contact.png",
+    "archived": "archive/2026-10-29-cleanup/report-inspection/output/pdf/fingerprint_report/reference_contact.png",
+    "bytes": 241503,
+    "sha256": "3FDA2BB4785CC296F2604C2F385157DBABC7A3708805B1A17B06BCB33D2DB79F",
+    "reason": "Reference contact sheet retained for provenance."
+  }
+]

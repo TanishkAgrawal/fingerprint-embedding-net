@@ -1,0 +1,10 @@
+flowchart LR
+    N0["Fingerprint image"]
+    N1["Preprocess 128 x 128"]
+    N2["DenseNet121 embedding"]
+    N3["Pinecone cosine search"]
+    N4["Ranked candidates"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4

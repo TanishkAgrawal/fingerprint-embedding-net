@@ -12,3 +12,7 @@ pytorch-metric-learning
 
 # --- Evaluation (ROC/EER, plots) ---
 matplotlib
+# --- Remote vector retrieval and demo ---
+pinecone>=7,<8
+python-dotenv>=1,<2
+streamlit

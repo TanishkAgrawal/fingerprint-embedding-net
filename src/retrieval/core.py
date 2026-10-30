@@ -5,7 +5,9 @@ Run modules from the repository root via python -m src.retrieval.<module>.
 import json
 from pathlib import Path
 
-import faiss
+import os
+import uuid
+from .pinecone_store import connect, PineconeGallery, upload, load_settings
 import numpy as np
 import pandas as pd
 import torch
@@ -22,7 +24,7 @@ def load_model(checkpoint: str, device: str = "auto"):
     ckpt = torch.load(path, map_location=dev, weights_only=False)
     backbone = ckpt.get("backbone", "densenet121")
     # Infer dimension from the projection head only if checkpoint metadata lacks it.
-    dim = ckpt.get("embedding_dim", 512)
+    dim = ckpt.get("embedding_dim", ckpt["model"]["embedding_head.weight"].shape[0])
     model = FingerprintEmbeddingNet(backbone_name=backbone,
                                    embedding_dim=int(dim), pretrained=False)
     model.load_state_dict(ckpt["model"], strict=True)
@@ -96,25 +98,36 @@ def embed_rows(model, device, dataset, indices, batch_size=32):
         if start == 0 or start + len(chunk) >= len(indices):
             print(f"Embedded {start + len(chunk)}/{len(indices)}")
     result = np.concatenate(vectors, axis=0)
-    faiss.normalize_L2(result)
+    result /= np.maximum(np.linalg.norm(result, axis=1, keepdims=True), 1e-12)
     return result
 
 
 def save_index(index_dir, vectors, gallery_rows, query_rows, metadata, manifest):
     root = Path(index_dir)
     root.mkdir(parents=True, exist_ok=True)
-    index = faiss.IndexFlatIP(int(vectors.shape[1]))
-    index.add(vectors)
-    faiss.write_index(index, str(root / "index.faiss"))
-    metadata.iloc[gallery_rows].assign(csv_row=gallery_rows).to_csv(root / "gallery.csv", index=False)
-    metadata.iloc[query_rows].assign(csv_row=query_rows).to_csv(root / "queries.csv", index=False)
+    gallery = metadata.iloc[gallery_rows].assign(csv_row=gallery_rows)
+    queries = metadata.iloc[query_rows].assign(csv_row=query_rows)
+    load_settings()
+    name = os.getenv("PINECONE_INDEX", "fingerprint-embeddings")
+    # Each build gets an isolated namespace so old vectors never pollute results.
+    namespace = f"{root.name}-{uuid.uuid4().hex}"
+    index = connect(name, int(vectors.shape[1]), create=True)
+    upload(index, namespace, vectors, gallery)
+    manifest = dict(manifest, storage="pinecone", pinecone_index=name,
+                    pinecone_namespace=namespace)
+    gallery.to_csv(root / "gallery.csv", index=False)
+    queries.to_csv(root / "queries.csv", index=False)
     (root / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
 def load_index(index_dir):
     root = Path(index_dir)
-    index = faiss.read_index(str(root / "index.faiss"))
     gallery = pd.read_csv(root / "gallery.csv").fillna("")
     queries = pd.read_csv(root / "queries.csv").fillna("")
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+    if manifest.get("storage") != "pinecone":
+        raise ValueError("This gallery uses legacy FAISS storage. Rebuild it with python -m src.retrieval.build_index")
+    dimension = int(manifest["embedding_dim"])
+    remote = connect(manifest["pinecone_index"], dimension)
+    index = PineconeGallery(remote, manifest["pinecone_namespace"], gallery, dimension)
     return index, gallery, queries, manifest

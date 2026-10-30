@@ -15,6 +15,8 @@ stuff/
 
 # --- Model artifacts and eval dumps (large, regenerable) ---
 /checkpoints
+/outputs/embeddings/
+/outputs/embedding_smoke/
 # --- Python ---
 __pycache__/
 *.py[cod]

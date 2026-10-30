@@ -1,0 +1,10 @@
+flowchart LR
+    N0["Query CSV row selection"]
+    N1["Model inference"]
+    N2["Pinecone top-k search"]
+    N3["Metadata ID mapping"]
+    N4["Candidate display"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4

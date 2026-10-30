@@ -1,281 +1,105 @@
-
-"""Interactive presentation demo for fingerprint retrieval + RAG."""
-
+"""Subject-scoped fingerprint comparison using the persisted DenseNet archive."""
 import json
-import re
-import subprocess
-import sys
 from pathlib import Path
-
+import numpy as np
 import pandas as pd
 import streamlit as st
-
-
-# -------------------------------------------------
-# Paths and configuration
-# -------------------------------------------------
+from src.retrieval.pinecone_store import connect
+from src.retrieval.subject_comparison import compare_subject
+from src.retrieval.ollama_explanation import explain_comparison
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+ARCHIVE = PROJECT_ROOT / 'outputs/embeddings/final_densenet/densenet121_arcface__best-2228dbf0'
+st.set_page_config(page_title='Fingerprint Subject Comparison', layout='wide')
+st.title('Fingerprint Subject Comparison')
+st.caption('DenseNet121 + ArcFace | Pinecone | Other images of the selected subject')
+st.info('The exact query image is excluded. Other images of the same finger remain eligible. Cosine similarity is a comparison score, not an accuracy percentage.')
 
-INDEX_DIR = (
-    PROJECT_ROOT / "outputs" / "retrieval" / "densenet121"
-)
-
-QUERIES_CSV = INDEX_DIR / "queries.csv"
-THRESHOLD_JSON = INDEX_DIR / "threshold.json"
-
-st.set_page_config(
-    page_title="Fingerprint Recognition System",
-    page_icon="🔍",
-    layout="wide",
-)
-
-# -------------------------------------------------
-# Application heading
-# -------------------------------------------------
-
-st.title("Fingerprint Recognition System")
-
-st.caption(
-    "DenseNet121 + ArcFace | FAISS Vector Retrieval | "
-    "Llama 3.2 RAG"
-)
-
-st.divider()
-
-# -------------------------------------------------
-# Verify required files
-# -------------------------------------------------
-
-required_files = [
-    INDEX_DIR / "index.faiss",
-    INDEX_DIR / "gallery.csv",
-    QUERIES_CSV,
-    THRESHOLD_JSON,
-]
-
-missing = [str(p) for p in required_files if not p.exists()]
-
-if missing:
-    st.error("Required retrieval files are missing.")
-    st.code("\n".join(missing))
-    st.stop()
-
-# -------------------------------------------------
-# Load query metadata and threshold
-# -------------------------------------------------
-
-queries = pd.read_csv(QUERIES_CSV)
-
-with open(THRESHOLD_JSON, "r", encoding="utf-8") as f:
-    threshold_info = json.load(f)
-
-threshold = float(threshold_info["threshold"])
-
-# -------------------------------------------------
-# Sidebar
-# -------------------------------------------------
+@st.cache_data
+def load_metadata(folder):
+    root = Path(folder)
+    metadata = pd.read_csv(root / 'metadata.csv', dtype={'subject_id': str, 'class_id': str}).fillna('')
+    manifest = json.loads((root / 'manifest.json').read_text())
+    remote = json.loads((root / 'pinecone.json').read_text())
+    if not manifest.get('complete') or not remote.get('complete'):
+        raise ValueError('The embedding archive and Pinecone upload must be complete')
+    if remote['rows'] != len(metadata) or remote['dimension'] != manifest['embedding_dim']:
+        raise ValueError('Archive and Pinecone metadata disagree')
+    return metadata, manifest, remote
 
 with st.sidebar:
-    st.header("Retrieval Settings")
-
-    query_number = st.number_input(
-        "Query fingerprint number",
-        min_value=0,
-        max_value=len(queries) - 1,
-        value=0,
-        step=1,
-    )
-
-    top_k = st.slider(
-        "Number of retrieved matches",
-        min_value=1,
-        max_value=10,
-        value=5,
-    )
-
-    use_rag = st.checkbox(
-        "Generate Llama 3.2 explanation",
-        value=True,
-    )
-
-    st.info(
-        f"Calibrated threshold: {threshold:.4f}"
-    )
-
-# -------------------------------------------------
-# Query information
-# -------------------------------------------------
-
-st.subheader("1. Selected Query Fingerprint")
-
-selected = queries.iloc[int(query_number)]
-
-left, right = st.columns(2)
-
-with left:
-    st.write("**Query number:**", int(query_number))
-    if "class_id" in queries.columns:
-        st.write("**Known identity:**", selected["class_id"])
-
-with right:
-    st.write("**Source:** SOCOFing test split")
-    st.write("**Embedding dimension:** 512")
-
-with st.expander("View fingerprint metadata"):
-    st.dataframe(
-        selected.to_frame(name="Value"),
-        use_container_width=True,
-    )
-
-st.divider()
-
-# -------------------------------------------------
-# Run existing query.py
-# -------------------------------------------------
-
-st.subheader("2. Fingerprint Retrieval")
-
-if st.button(
-    "Search Fingerprint Database",
-    type="primary",
-    use_container_width=True,
-):
-
-    command = [
-        sys.executable,
-        "-m",
-        "src.retrieval.query",
-        "--index-dir",
-        str(INDEX_DIR),
-        "--query-number",
-        str(int(query_number)),
-        "--top-k",
-        str(top_k),
-        "--threshold",
-        str(threshold),
-    ]
-
-    if use_rag:
-        command.extend([
-            "--ollama-model",
-            "llama3.2",
-        ])
-
-    with st.spinner("Generating embeddings and searching FAISS..."):
-        try:
-            result = subprocess.run(
-                command,
-                cwd=str(PROJECT_ROOT),
-                capture_output=True,
-                text=True,
-                timeout=180,
-            )
-        except subprocess.TimeoutExpired:
-            st.error("Retrieval timed out.")
-            st.stop()
-
-    if result.returncode != 0:
-        st.error("Retrieval failed.")
-        st.code(result.stderr or result.stdout)
+    st.header('Comparison settings')
+    split = st.selectbox('Split', ['test', 'val'])
+    try:
+        metadata, manifest, remote = load_metadata(str(ARCHIVE / split))
+    except (OSError, ValueError, KeyError) as error:
+        st.error(str(error))
         st.stop()
+    subject = st.selectbox('Subject ID', sorted(metadata.subject_id.unique(), key=int))
+    subject_rows = metadata[metadata.subject_id == subject]
+    finger = st.selectbox('Query finger', sorted(subject_rows.class_id.unique()))
+    finger_rows = subject_rows[subject_rows.class_id == finger].set_index('embedding_row', drop=False)
+    query_row = st.selectbox('Query image', finger_rows.index.tolist(),
+        format_func=lambda row: f"Image {row} | {finger_rows.loc[row, 'alteration']} | {finger_rows.loc[row, 'difficulty']}")
+    top_k = st.slider('Closest other images', 1, 10, 5)
+    st.subheader('Ollama explanation')
+    explain_results = st.checkbox('Explain comparison results', value=True)
+    ollama_model = st.text_input('Installed Ollama model', value='llama3.2',
+                                disabled=not explain_results)
+    st.caption('Uses local Ollama at 127.0.0.1:11434. Start it with ollama serve and install the selected model with ollama pull MODEL.')
 
-    output = result.stdout
+selected = finger_rows.loc[query_row]
+st.subheader('1. Selected query fingerprint')
+st.write(f'**Subject:** {subject} | **Finger:** {finger} | **Image ID:** {query_row}')
+image_path = PROJECT_ROOT / str(selected.filepath)
+if image_path.exists():
+    st.image(str(image_path), caption='Query image - excluded from results', width=180)
+with st.expander('Query metadata'):
+    st.dataframe(selected.astype(str).to_frame('Value'), width='stretch')
 
-    # ---------------------------------------------
-    # Parse ranked candidates
-    # ---------------------------------------------
-
-    matches = []
-
-    pattern = (
-        r"^\s*(\d+)\s*\|\s*(.*?)\s*\|\s*"
-        r"cosine=([-+]?\d*\.?\d+)"
-    )
-
-    for line in output.splitlines():
-        match = re.match(pattern, line)
-
-        if match:
-            matches.append({
-                "Rank": int(match.group(1)),
-                "Fingerprint ID": match.group(2).strip(),
-                "Cosine Similarity": float(match.group(3)),
-            })
-
-    if matches:
-        results_df = pd.DataFrame(matches)
-
-        best = results_df.iloc[0]
-        best_score = float(best["Cosine Similarity"])
-        accepted = best_score >= threshold
-
-        st.subheader("3. Best Matching Fingerprint")
-
+st.subheader('2. Compare other fingerprint images')
+st.caption('Search is restricted to this known subject. This view does not measure identification across subjects.')
+if st.button('Compare subject fingerprints', type='primary', width='stretch'):
+    try:
+        with st.spinner('Finding the closest other images in Pinecone...'):
+            vectors = np.load(ARCHIVE / split / 'embeddings.npy', mmap_mode='r')
+            index = connect(remote['index'], manifest['embedding_dim'])
+            matches = compare_subject(index, remote['namespace'], metadata, vectors, query_row, top_k)
+    except Exception as error:
+        st.error(f'Comparison failed: {error}')
+        st.stop()
+    if not matches:
+        st.warning('No other images are available for this subject.')
+    else:
+        results = pd.DataFrame(matches)
+        st.subheader('3. Closest other image')
         a, b, c = st.columns(3)
-
-        a.metric(
-            "Best Match",
-            str(best["Fingerprint ID"]),
-        )
-
-        b.metric(
-            "Cosine Similarity",
-            f"{best_score:.4f}",
-        )
-
-        c.metric(
-            "Matching Threshold",
-            f"{threshold:.4f}",
-        )
-
-        if accepted:
-            st.success(
-                "Top candidate is above the calibrated threshold."
-            )
-        else:
-            st.warning(
-                "No candidate exceeded the calibrated threshold."
-            )
-
-        st.caption(
-            "This is an automated candidate decision, "
-            "not proof of personal identity."
-        )
-
-        st.subheader("4. Top Retrieved Fingerprints")
-
-        st.dataframe(
-            results_df,
-            hide_index=True,
-            use_container_width=True,
-        )
-
-        st.bar_chart(
-            results_df.set_index("Fingerprint ID")[
-                "Cosine Similarity"
-            ]
-        )
-
-    # ---------------------------------------------
-    # Display RAG explanation
-    # ---------------------------------------------
-
-    if "Local RAG explanation:" in output:
-        explanation = output.split(
-            "Local RAG explanation:", 1
-        )[1].strip()
-
-        st.subheader("5. AI-Generated Explanation")
-        st.write(explanation)
-
-    with st.expander("View complete terminal output"):
-        st.code(output)
-
-st.divider()
-
-st.caption(
-    "Fingerprint embeddings: DenseNet121 | "
-    "Similarity search: FAISS | "
-    "Generation: Ollama Llama 3.2"
-)
+        a.metric('Finger', matches[0]['Fingerprint ID'])
+        b.metric('Cosine similarity', f"{matches[0]['Cosine Similarity']:.4f}")
+        c.metric('Same finger as query', 'Yes' if matches[0]['Same finger'] else 'No')
+        st.subheader('4. Ranked comparisons for this subject')
+        st.dataframe(results, hide_index=True, width='stretch')
+        st.bar_chart(results.assign(Candidate=results['Rank'].astype(str) + ' | image ' + results['Image ID'].astype(str)),
+                     x='Candidate', y='Cosine Similarity', sort=False)
+        columns = st.columns(min(5, len(matches)))
+        for position, match in enumerate(matches):
+            row = metadata[metadata.embedding_row == match['Image ID']].iloc[0]
+            path = PROJECT_ROOT / str(row.filepath)
+            with columns[position % len(columns)]:
+                if path.exists():
+                    st.image(str(path), caption=f"#{match['Rank']} | {match['Fingerprint ID']} | image {match['Image ID']}", width=160)
+        if explain_results:
+            st.subheader('5. Explanation of the results')
+            st.caption('AI-generated description of the scores and metadata; no image inspection or verified identity decision.')
+            try:
+                with st.spinner('Ollama is explaining the comparison results...'):
+                    explanation = explain_comparison(matches, {
+                        'Subject ID': str(subject), 'Fingerprint ID': str(finger),
+                        'Image ID': int(query_row), 'Split': split,
+                        'Alteration': str(selected.get('alteration', '')),
+                        'Difficulty': str(selected.get('difficulty', '')),
+                    }, ollama_model)
+                st.write(explanation)
+            except Exception as error:
+                st.warning(f'Ollama explanation unavailable: {error}. Comparison results above remain available. Check that Ollama is running and the selected model is installed.')
+st.caption('Self-image matches are excluded. Different images of the same finger can still have high similarity.')
